@@ -1,0 +1,22 @@
+[project]
+name = "Alice-Engine"
+version = "0.0.0"
+description = "Alice Engine(v0.1)是一个文字游戏引擎，旨在让游戏开发者简便地开发属于自己的文字游戏。引擎使用python语言开发，操作简单，新手可轻松上手。"
+authors = [
+    { name = "xiaomi2023", email = "Unknown" },
+    { name = "yeyiy", email = "yangzhengye163@163.com" },
+    { name = "fexcode", email = "2734664632@qq.com" },
+]
+dependencies = []
+requires-python = ">=3.10"
+keywords = ["Alice-Engine", "文字游戏引擎", "Alice", "Alice-Engine"]
+readme = "README.md"
+license = { text = "MIT" }
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+
+[tool.pdm]
+distribution = true
