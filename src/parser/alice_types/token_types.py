@@ -3,7 +3,7 @@ class Token:
         self.value = value
 
     def __str__(self):
-        return "Token({})".format(self.value)
+        return self.value
 
     def __repr__(self):
         return self.__str__()
@@ -16,6 +16,9 @@ class Token:
 
     def is_command(self):
         return self.value.startswith("@") and self.value.endswith("@")
+
+    def is_game_name(self):
+        return self.value.startswith("&")
 
     def _is_not_block(self):
         return not (self.value == "{" or self.value == "}")
@@ -64,7 +67,7 @@ class Tokens:
     def __str__(self):
         text = ""
         for token in self.tokens:
-            text += str(token) + " "
+            text += str(token) + "\n"
         return text.strip()
 
     def __repr__(self):

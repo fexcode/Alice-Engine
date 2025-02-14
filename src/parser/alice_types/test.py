@@ -11,17 +11,10 @@ class TestAliceTypes(unittest.TestCase):
     def test_Option_type(self):
         opt = Option("this is an option")
         node1 = Node("node1")
-        node2 = Node("node2")
-        node3 = Node("node3")
-
-        opt.add_node(node1)
-        opt.add_node(node2)
-        opt.add_node(node3)
-
+        opt.set_node(node1)
         self.assertEqual(len(opt.nodes), 3)
-        self.assertEqual(opt.nodes[0], node1)
-        self.assertEqual(opt.nodes[1], node2)
-        self.assertEqual(opt.nodes[2], node3)
+        self.assertEqual(opt.nodes, node1)
+
 
     def test_Node_type(self):
         node = Node("this is a node")

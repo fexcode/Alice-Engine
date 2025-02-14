@@ -16,13 +16,13 @@ class Option:
     def __init__(
         self,
         opname,
-        nodes: list["Node"] | None = None,
+        node=None,
     ):
         self.opname = opname  # 选项名
-        self.nodes = nodes or []  # 选项节点
+        self.node = node  # 选项节点
 
-    def add_node(self, node: "Node"):
-        self.nodes.append(node)
+    def set_node(self, node: "Node"):
+        self.node = node
 
 
 class Node:
@@ -33,11 +33,11 @@ class Node:
         cmds: list[Command] | None = None,
     ):
         self.value = value  # 节点值
-        self.options = options or []
-        self.cmds = cmds or []
+        self.options = options or list()
+        self.cmds = cmds or list()
 
     def add_option(self, option: Option):
-        self.options.append(option)
+        self.options.insert(0, option)  # 首插入，保证先处理的选项在前面
 
     def add_cmd(self, cmd: Command):
         self.cmds.append(cmd)
@@ -49,25 +49,22 @@ class NodeTree:
         self.game_name = game_name
 
     def __str__(self):
-        return self._print_node(self.root, 0)
+        return self._print_node(self.__root)
 
-    def _print_node(self, node: Node, indent: int):
-        # 生成缩进
-        indent_str = " " * indent
-        # 打印节点值
-        output = f"{indent_str}节点：{node.value}\n"
-        # 打印命令
-        for cmd in node.cmds:
-            output += f"{indent_str}  命令：{cmd.cmd}\n"
-        # 递归打印子节点
-        for option in node.options:
-            output += f"{indent_str}选项：{option.opname}\n"
-            for child_node in option.nodes:
-                output += self._print_node(child_node, indent + 2)
-        return output
+    def _print_node(self, root: Node, indent: int = 0):
+        # 递归打印节点及其子节点
+        s = f"{' '*indent}{root.value}\n"
+        for option in root.options:
+            s += f"{' '*indent}  {option.opname}\n"
+            if option.node:
+                s += self._print_node(option.node, indent + 2)
+                for cmd in root.cmds:
+                    s += f"{' '*indent}    {cmd.cmd}\n"
+
+        return s
 
     def __repr__(self):
         return str(self)
-    
+
     def set_root(self, root: Node):
         self.__root = root
