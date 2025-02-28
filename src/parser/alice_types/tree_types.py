@@ -37,7 +37,7 @@ class Node:
         self.cmds = cmds or list()
 
     def add_option(self, option: Option):
-        self.options.insert(0, option)  # 首插入，保证先处理的选项在前面
+        self.options.append(option)
 
     def add_cmd(self, cmd: Command):
         self.cmds.append(cmd)

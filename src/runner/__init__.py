@@ -2,7 +2,7 @@ __import__("sys").path.append("./src")
 
 from parser.alice_types import *
 from parser.script_parser import tokenize, parse
-from runner import run_ast
+from .core import run_ast
 
 
 def run(code):
@@ -12,8 +12,10 @@ def run(code):
     ast = parse(tks)
     run_ast(ast)
 
+
 if __name__ == "__main__":
-    run("""
+    run(
+        """
 游戏名&
 {
    "你好啊
@@ -26,4 +28,5 @@ if __name__ == "__main__":
     }
     #exit
 }
-""")
+"""
+    )
