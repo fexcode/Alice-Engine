@@ -54,7 +54,7 @@ def parse_block(tokens: Tokens) -> Node:
             if tokens.get_next().value != "{":
                 # 当选项后面没有{时,说明选项后面没有节点,选项选择后无需跳转,程序停止
                 block_node.add_option(current_option)
-            
+
         elif token.is_command():
             block_node.add_cmd(Command(cmd=token.value[1:-1]))
         elif token.value == "{":
@@ -69,7 +69,9 @@ if __name__ == "__main__":
     code = """
 游戏名&
 {
-    你好啊$s我是Fexcode(https:$k$kgithub.com$kFexcode)
+   "你好啊
+   $s
+   我是Fexcode(https:$k$kgithub.com$kFexcode)"
     #hi
     {
         你好啊
@@ -79,7 +81,10 @@ if __name__ == "__main__":
     #exit
 }
 """
-    print(str(tks := tokenize(code)))
+    tks = tokenize(code)
+    for i, token in enumerate(tks):
+        print(f"{i}> {token}")
+
     tree = parse(tks)
 
     print()

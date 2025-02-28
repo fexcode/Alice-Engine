@@ -22,13 +22,6 @@ def remove_empty_line(al_script: str) -> str:
     return "\n".join([line for line in al_script.split("\n") if line.strip()])
 
 
-def remove_enter(al_script: str) -> str:
-    """
-    去除回车
-    """
-    return al_script.replace("\n", "")
-
-
 def remove_space(al_script: str) -> str:
     """
     去除空格
@@ -42,6 +35,5 @@ def do_pretreatment(al_script: str) -> str:
     """
     al_script = remove_comment(al_script)
     al_script = remove_empty_line(al_script)
-    al_script = remove_enter(al_script)
     al_script = remove_space(al_script)
     return al_script

@@ -23,6 +23,11 @@ class Token:
     def _is_not_block(self):
         return not (self.value == "{" or self.value == "}")
 
+    def is_str(self):
+        return (self.value.startswith('"') and self.value.endswith('"')) or (
+            self.value.startswith("'") and self.value.endswith("'")
+        )
+
 
 class Tokens:
     def __init__(self, tokens: list[Token], pointer: int = 0):

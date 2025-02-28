@@ -1,5 +1,6 @@
 import pretreatment
-from alice_types.token_types import Token,Tokens
+from alice_types.token_types import Token, Tokens
+
 
 def tokenize(code: str) -> Tokens:
     """
@@ -36,7 +37,6 @@ def tokenize(code: str) -> Tokens:
             continue
         if char == '"':
             in_string = True
-            token += char
             continue
         if char == "#":
             if token:
@@ -73,6 +73,13 @@ def tokenize(code: str) -> Tokens:
                 tokens.append(token)
                 token = ""
             continue
+        if char == "\n":
+            # 不在字符串中的空行不作为token
+            if token and not in_string:
+                tokens.append(token)
+                token = ""
+            continue
+
         token += char
 
     if token:
@@ -94,27 +101,28 @@ def tokenize(code: str) -> Tokens:
                 j += 1
             tokens[tokens.index(i) : j + 2] = ["".join(tokens[tokens.index(i) : j + 2])]
 
+    # 构造 token
+    tokens = [Token(token) for token in tokens]
+
     # 处理转义字符
     # 看看每个token中是否包含转义字符,仅替换转义字符
     for i in range(len(tokens)):
-        if "$n" in tokens[i]:
-            tokens[i] = tokens[i].replace("$n", "\n")
-        if "$s" in tokens[i]:
-            tokens[i] = tokens[i].replace("$s", " ")
-        if "$t" in tokens[i]:
-            tokens[i] = tokens[i].replace("$t", "\t")
-        if "$p" in tokens[i]:
-            tokens[i] = tokens[i].replace("$p", "#")
-        if "$l" in tokens[i]:
-            tokens[i] = tokens[i].replace("$l", "{")
-        if "$r" in tokens[i]:
-            tokens[i] = tokens[i].replace("$r", "}")
-        if "$b" in tokens[i]:
-            tokens[i] = tokens[i].replace("$b", "\r")
-        if "$k" in tokens[i]:
-            tokens[i] = tokens[i].replace("$k", "/")
-
-    # 构造 token
-    tokens = [Token(token) for token in tokens]
+        if tokens[i].is_str():
+            if "$n" in tokens[i]:
+                tokens[i] = tokens[i].replace("$n", "\n")
+            if "$s" in tokens[i]:
+                tokens[i] = tokens[i].replace("$s", " ")
+            if "$t" in tokens[i]:
+                tokens[i] = tokens[i].replace("$t", "\t")
+            if "$p" in tokens[i]:
+                tokens[i] = tokens[i].replace("$p", "#")
+            if "$l" in tokens[i]:
+                tokens[i] = tokens[i].replace("$l", "{")
+            if "$r" in tokens[i]:
+                tokens[i] = tokens[i].replace("$r", "}")
+            if "$b" in tokens[i]:
+                tokens[i] = tokens[i].replace("$b", "\r")
+            if "$k" in tokens[i]:
+                tokens[i] = tokens[i].replace("$k", "/")
 
     return Tokens(tokens)
