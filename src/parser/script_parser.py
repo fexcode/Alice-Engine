@@ -1,9 +1,9 @@
 __import__("sys").path.append("./src")
 from logger import logger
 
-from alice_types.tree_types import *
-from alice_types.token_types import *
-from tokenizer import tokenize
+from .alice_types.tree_types import *
+from .alice_types.token_types import *
+from .tokenizer import tokenize
 
 
 def parse(tokens: Tokens) -> NodeTree:

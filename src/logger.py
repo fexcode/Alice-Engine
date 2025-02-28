@@ -28,4 +28,4 @@ class Logger:
             csl.log(message)
 
 
-logger = Logger(debug=True)
+logger = Logger(debug=False)

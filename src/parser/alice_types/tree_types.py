@@ -68,3 +68,6 @@ class NodeTree:
 
     def set_root(self, root: Node):
         self.__root = root
+
+    def get_root(self) -> Node:
+        return self.__root

@@ -1,5 +1,5 @@
-import pretreatment
-from alice_types.token_types import Token, Tokens
+import parser.pretreatment as pretreatment
+from .alice_types.token_types import Token, Tokens
 
 
 def tokenize(code: str) -> Tokens:
