@@ -24,6 +24,10 @@ def run_node(node: Node):
     for i, opt in enumerate(node.options):
         print(f"{i+1}> {opt.opname}")
 
+    # 若没有选项，直接退出
+    if not node.options:
+        return
+
     while True:
         result = input(">>> ")
         if result.isdigit():
