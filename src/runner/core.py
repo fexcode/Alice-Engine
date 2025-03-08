@@ -6,27 +6,21 @@ from parser.script_parser import tokenize, parse
 
 def run_ast(ast: NodeTree):
     root: Node = ast.get_root()
-    run_node(root)
+    context = {}  # 在根节点初始化全局上下文
+    run_node(root, context)  # 将上下文传递给子节点
 
 
-def run_node(node: Node):
-    context = {}  # 初始化上下文
-
+def run_node(node: Node, context: dict):  # 新增 context 参数
     # 输出节点文本
     print(node.value)
 
     # 执行命令并更新上下文
     for cmd in node.cmds:
-        if cmd.cmd == "@exit()@":
-            exit()
-        else:
-            # 执行命令，并将更新后的上下文传回
-            new_context = cmd.run(context)
-            context.update(new_context if new_context else {})
+        cmd.run(context)  # 直接操作共享的上下文
 
     # 打印选项
     for i, opt in enumerate(node.options):
-        print(f"{i+1}> {opt.opname}")
+        print(f"{i + 1}> {opt.opname}")
 
     # 若没有选项，直接退出
     if not node.options:
@@ -36,15 +30,14 @@ def run_node(node: Node):
         result = input(">>> ")
         if result.isdigit():
             index = int(result)
-            if 1 <= index < len(node.options)+1:
-                run_node(node.options[index-1].node)
+            if 1 <= index <= len(node.options):
+                # 将上下文传递给子节点
+                run_node(node.options[index - 1].node, context)
                 break
             else:
                 print("错误的选项")
-                continue
         else:
             print("请输入选项前的数字")
-            continue
 
 
 if __name__ == "__main__":
