@@ -1,3 +1,6 @@
+import ast
+
+
 class Command:
     def __init__(self, cmd):
         self.cmd = cmd  # 命令名
@@ -10,17 +13,31 @@ class Command:
 
     def run(self, context: dict = None):
         if context is None:
+            context = {}    # 存储上下文
+
+        return Command._exec(self.cmd, context)  # 在存储的上下文环境中运行代码并返回结果
+
+    @staticmethod
+    def _exec(s, context=None):
+        if context is None:
             context = {}
-        # 使用 exec 的 globals 参数共享上下文
-        exec(self.cmd, context)
-        return context  # 返回更新后的上下文（可选）
+        try:
+            # 尝试解析为表达式
+            code = ast.parse(s, mode='eval')
+            result = eval(compile(code, '<string>', 'eval'), context)
+            return '' if result is None else result
+        except SyntaxError:
+            # 解析为语句
+            code = ast.parse(s, mode='exec')
+            exec(compile(code, '<string>', 'exec'), context)
+            return ''
 
 
 class Option:
     def __init__(
-        self,
-        opname,
-        node=None,
+            self,
+            opname,
+            node=None,
     ):
         self.opname = opname  # 选项名
         self.node = node  # 选项节点
@@ -31,10 +48,10 @@ class Option:
 
 class Node:
     def __init__(
-        self,
-        value: str = "",
-        options: list[Option] | None = None,
-        cmds: list[Command] | None = None,
+            self,
+            value: str = "",
+            options: list[Option] | None = None,
+            cmds: list[Command] | None = None,
     ):
         self.value = value  # 节点值
         self.options = options or list()
@@ -57,13 +74,13 @@ class NodeTree:
 
     def _print_node(self, root: Node, indent: int = 0):
         # 递归打印节点及其子节点
-        s = f"{' '*indent}{root.value}\n"
+        s = f"{' ' * indent}{root.value}\n"
         for option in root.options:
-            s += f"{' '*indent}  {option.opname}\n"
+            s += f"{' ' * indent}  {option.opname}\n"
             if option.node:
                 s += self._print_node(option.node, indent + 2)
                 for cmd in root.cmds:
-                    s += f"{' '*indent}    {cmd.cmd}\n"
+                    s += f"{' ' * indent}    {cmd.cmd}\n"
 
         return s
 
