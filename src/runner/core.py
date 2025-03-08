@@ -10,15 +10,19 @@ def run_ast(ast: NodeTree):
 
 
 def run_node(node: Node):
+    context = {}  # 初始化上下文
+
     # 输出节点文本
     print(node.value)
 
-    # 运行命令
+    # 执行命令并更新上下文
     for cmd in node.cmds:
         if cmd.cmd == "@exit()@":
             exit()
         else:
-            cmd.run()
+            # 执行命令，并将更新后的上下文传回
+            new_context = cmd.run(context)
+            context.update(new_context if new_context else {})
 
     # 打印选项
     for i, opt in enumerate(node.options):
