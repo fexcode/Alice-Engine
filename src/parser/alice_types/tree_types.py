@@ -8,8 +8,12 @@ class Command:
     def __repr__(self):
         return self.__str__()
 
-    def run(self):
-        exec(self.cmd)
+    def run(self, context: dict = None):
+        if context is None:
+            context = {}
+        # 使用 exec 的 globals 参数共享上下文
+        exec(self.cmd, context)
+        return context  # 返回更新后的上下文（可选）
 
 
 class Option:

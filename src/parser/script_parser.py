@@ -28,38 +28,33 @@ def parse(tokens: Tokens) -> NodeTree:
 
 
 def parse_block(tokens: Tokens) -> Node:
-    # 在parse中,根节点的{已经被过滤了,所以当前token就是节点文本
     if not tokens.get_current().is_text():
         raise SyntaxError("节点文本缺失")
-        pass
 
-    node_text = ""
-
+    # 获取原始文本并按行处理
     node_text = tokens.get_current().value
+    lines = node_text.strip().split('\n')  # 按换行分割并去除首尾空行
+    cleaned_lines = [line.strip() for line in lines]  # 去除每行首尾空格
+    cleaned_text = '\n'.join(cleaned_lines)  # 重新组合为干净的文本
 
-    block_node = Node(value=node_text)
+    block_node = Node(value=cleaned_text)  # 使用处理后的文本
     current_option: Option | None = None
 
-    # 其实并不需要i变量,这里只是防止程序莫名其妙地死循环,也可以改成while True:
     for i in range(len(tokens)):
-        logger.log(NodeTree(root=block_node, game_name=""))
-        # logger.log("=> " + current_option.opname if current_option else "None")
         token = tokens.next()
-        # logger.log(f"token: {token}, pointer: {tokens.pointer}")
-
         if token.value == "}":
             return block_node
+            
         elif token.is_option():
             current_option = Option(opname=token.value[1:])
             if tokens.get_next().value != "{":
-                # 当选项后面没有{时,说明选项后面没有节点,选项选择后无需跳转,程序停止
                 block_node.add_option(current_option)
-
+                
         elif token.is_command():
             block_node.add_cmd(Command(cmd=token.value[1:-1]))
+            
         elif token.value == "{":
-            # 遇到{时,说明选项后面有节点,需要递归解析节点
-            tokens.next()  # 指针向后移动,过滤{
+            tokens.next()
             node = parse_block(tokens)
             current_option.set_node(node)
             block_node.add_option(current_option)
